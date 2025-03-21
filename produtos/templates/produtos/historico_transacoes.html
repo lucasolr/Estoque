@@ -1,0 +1,140 @@
+{% extends 'produtos/base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <h1 class="display-5 mb-4">
+            <i class="bi bi-clock-history"></i> Histórico de Transações
+        </h1>
+    </div>
+    <div class="col-md-6 text-md-end">
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Voltar
+        </a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-funnel"></i> Filtrar Transações
+            </div>
+            <div class="card-body">
+                <form method="get" class="row g-3">
+                    <div class="col-md-3">
+                        <label for="{{ form.data_inicio.id_for_label }}" class="form-label">Data Início</label>
+                        {{ form.data_inicio }}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{ form.data_fim.id_for_label }}" class="form-label">Data Fim</label>
+                        {{ form.data_fim }}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{ form.produto.id_for_label }}" class="form-label">Produto</label>
+                        {{ form.produto }}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="{{ form.tipo.id_for_label }}" class="form-label">Tipo de Operação</label>
+                        {{ form.tipo }}
+                    </div>
+                    <div class="col-md-12 d-flex justify-content-end">
+                        <a href="{% url 'historico_transacoes' %}" class="btn btn-secondary me-2">Limpar</a>
+                        <button type="submit" class="btn btn-primary">Filtrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card bg-success text-white">
+            <div class="card-body text-center">
+                <h5 class="card-title">Entradas</h5>
+                <p class="display-6">{{ entradas }}</p>
+                <p class="card-text">Total de itens que entraram no estoque</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-danger text-white">
+            <div class="card-body text-center">
+                <h5 class="card-title">Saídas</h5>
+                <p class="display-6">{{ saidas }}</p>
+                <p class="card-text">Total de itens que saíram do estoque</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-primary text-white">
+            <div class="card-body text-center">
+                <h5 class="card-title">Saldo</h5>
+                <p class="display-6">{{ saldo }}</p>
+                <p class="card-text">Diferença entre entradas e saídas</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <div>
+            <i class="bi bi-list-ul"></i> Transações ({{ total_registros }} encontradas)
+        </div>
+    </div>
+    <div class="card-body">
+        {% if transacoes %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Data/Hora</th>
+                            <th>Produto</th>
+                            <th>Operação</th>
+                            <th class="text-center">Quantidade</th>
+                            <th>Motivo</th>
+                            <th>Usuário</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for transacao in transacoes %}
+                            <tr class="{% if transacao.tipo == 'entrada' %}bg-success bg-opacity-10{% else %}bg-danger bg-opacity-10{% endif %}">
+                                <td>{{ transacao.data|date:"d/m/Y H:i" }}</td>
+                                <td>{{ transacao.produto.nome }}</td>
+                                <td>
+                                    {% if transacao.tipo == 'entrada' %}
+                                        <span class="badge bg-success">Entrada</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Saída</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">{{ transacao.quantidade }}</td>
+                                <td>{{ transacao.motivo|default:"-" }}</td>
+                                <td>{{ transacao.usuario.username|default:"Sistema" }}</td>
+                            </tr>
+                            {% if transacao.observacao %}
+                                <tr class="{% if transacao.tipo == 'entrada' %}bg-success bg-opacity-10{% else %}bg-danger bg-opacity-10{% endif %}">
+                                    <td colspan="6" class="text-muted">
+                                        <small><strong>Observação:</strong> {{ transacao.observacao }}</small>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% if total_registros > 100 %}
+                <div class="alert alert-info mt-3">
+                    <i class="bi bi-info-circle"></i> Exibindo as 100 transações mais recentes de um total de {{ total_registros }}. Use os filtros para refinar os resultados.
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i> Nenhuma transação encontrada com os filtros selecionados.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 

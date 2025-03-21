@@ -1,0 +1,181 @@
+{% extends 'produtos/base.html' %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <h1 class="h3 mb-4">{{ titulo }}</h1>
+    
+    <!-- Resumo do Estoque -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card shadow h-100 py-2 border-left-primary">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Total de Produtos</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_produtos }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-box-seam fa-2x text-gray-300" style="font-size: 2rem; color: var(--primary-color);"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card shadow h-100 py-2 border-left-success">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Valor Total do Estoque</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">R$ {{ valor_total|floatformat:2 }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-currency-dollar fa-2x text-gray-300" style="font-size: 2rem; color: #28a745;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card shadow h-100 py-2 border-left-info">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Total de Itens</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_itens }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-list-check fa-2x text-gray-300" style="font-size: 2rem; color: #17a2b8;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card shadow h-100 py-2 border-left-warning">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Alertas de Estoque</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ produtos_estoque_baixo }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-exclamation-triangle fa-2x text-gray-300" style="font-size: 2rem; color: #ffc107;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Relatórios Disponíveis -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold">Relatórios Disponíveis</h6>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="bi bi-graph-up me-2"></i> Movimentação de Estoque
+                                <small class="d-block text-muted">Entradas e saídas por período</small>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">Gerar</span>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="bi bi-bar-chart me-2"></i> Produtos Mais Movimentados
+                                <small class="d-block text-muted">Top produtos por entrada/saída</small>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">Gerar</span>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="bi bi-exclamation-circle me-2"></i> Produtos com Estoque Crítico
+                                <small class="d-block text-muted">Abaixo do nível mínimo</small>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">Gerar</span>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="bi bi-calendar-check me-2"></i> Histórico de Transações
+                                <small class="d-block text-muted">Todas as movimentações com detalhes</small>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">Gerar</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold">Gerar Relatório Personalizado</h6>
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="tipo_relatorio" class="form-label">Tipo de Relatório</label>
+                            <select class="form-select" id="tipo_relatorio">
+                                <option selected>Selecione um tipo de relatório</option>
+                                <option value="movimento_estoque">Movimentação de Estoque</option>
+                                <option value="produtos_criticos">Produtos com Estoque Crítico</option>
+                                <option value="valor_estoque">Valor do Estoque</option>
+                                <option value="transacoes">Histórico de Transações</option>
+                            </select>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="data_inicio" class="form-label">Data Inicial</label>
+                                <input type="date" class="form-control" id="data_inicio">
+                            </div>
+                            <div class="col">
+                                <label for="data_fim" class="form-label">Data Final</label>
+                                <input type="date" class="form-control" id="data_fim">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="formato" class="form-label">Formato</label>
+                            <select class="form-select" id="formato">
+                                <option value="pdf">PDF</option>
+                                <option value="excel">Excel</option>
+                                <option value="csv">CSV</option>
+                            </select>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="incluir_graficos">
+                            <label class="form-check-label" for="incluir_graficos">Incluir Gráficos</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Gerar Relatório</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Estatísticas recentes -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold">Estatísticas Recentes</h6>
+        </div>
+        <div class="card-body">
+            <p>Nos últimos 30 dias:</p>
+            <ul>
+                <li>{{ total_transacoes }} transações registradas</li>
+                <li>{{ produtos_estoque_baixo }} produtos atingiram níveis críticos</li>
+            </ul>
+            <p class="mt-3">Para estatísticas mais detalhadas, gere um relatório personalizado.</p>
+        </div>
+    </div>
+</div>
+{% endblock %} 

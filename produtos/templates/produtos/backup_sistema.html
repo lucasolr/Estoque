@@ -1,0 +1,207 @@
+{% extends 'produtos/base.html' %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <h1 class="h3 mb-4">{{ titulo }}</h1>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold">Backup do Sistema</h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-4">
+                        Realize um backup completo do sistema para garantir a segurança dos seus dados. O backup inclui 
+                        todos os dados de produtos, transações, configurações e relatórios.
+                    </p>
+                    
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        Último backup realizado em: <strong>{{ ultimo_backup|date:"d/m/Y H:i" }}</strong>
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="backup_name" class="form-label">Nome do Backup</label>
+                            <input type="text" class="form-control" id="backup_name" 
+                                   value="backup_sistema_{% now 'Y-m-d_H-i' %}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label d-block">O que incluir no backup:</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="include_products" checked>
+                                <label class="form-check-label" for="include_products">Produtos</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="include_transactions" checked>
+                                <label class="form-check-label" for="include_transactions">Transações</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="include_images" checked>
+                                <label class="form-check-label" for="include_images">Imagens</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="include_settings" checked>
+                                <label class="form-check-label" for="include_settings">Configurações</label>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="compress_backup" checked>
+                            <label class="form-check-label" for="compress_backup">Comprimir backup (recomendado)</label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-cloud-arrow-up-fill me-2"></i>Iniciar Backup
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold">Backups Anteriores</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Data</th>
+                                    <th>Tamanho</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>backup_sistema_2023-10-15_14-30</td>
+                                    <td>15/10/2023 14:30</td>
+                                    <td>3.2 MB</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-download"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-success">
+                                                <i class="bi bi-arrow-counterclockwise"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>backup_sistema_2023-09-20_10-15</td>
+                                    <td>20/09/2023 10:15</td>
+                                    <td>2.8 MB</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-download"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-success">
+                                                <i class="bi bi-arrow-counterclockwise"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>backup_sistema_2023-08-05_16-45</td>
+                                    <td>05/08/2023 16:45</td>
+                                    <td>2.5 MB</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-download"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-success">
+                                                <i class="bi bi-arrow-counterclockwise"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold">Restaurar Backup</h6>
+                </div>
+                <div class="card-body">
+                    <p>Restaure um backup anterior ou importe um arquivo de backup.</p>
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="backup_file" class="form-label">Arquivo de Backup</label>
+                            <input class="form-control" type="file" id="backup_file">
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="confirm_restore">
+                            <label class="form-check-label" for="confirm_restore">
+                                Entendo que esta ação substituirá todos os dados atuais
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-warning">
+                            <i class="bi bi-arrow-clockwise me-2"></i>Restaurar Backup
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold">Configurações de Backup Automático</h6>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="auto_backup" checked>
+                            <label class="form-check-label" for="auto_backup">
+                                Ativar backup automático
+                            </label>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="backup_frequency" class="form-label">Frequência</label>
+                            <select class="form-select" id="backup_frequency">
+                                <option value="daily">Diário</option>
+                                <option value="weekly" selected>Semanal</option>
+                                <option value="monthly">Mensal</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="retention_days" class="form-label">Retenção (dias)</label>
+                            <input type="number" class="form-control" id="retention_days" value="30" min="1">
+                            <div class="form-text">Backups mais antigos serão excluídos automaticamente</div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            Salvar Configurações
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

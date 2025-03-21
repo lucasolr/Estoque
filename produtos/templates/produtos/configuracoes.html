@@ -1,0 +1,73 @@
+{% extends 'produtos/base.html' %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <h1 class="h3 mb-4">{{ titulo }}</h1>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold">Configurações Gerais</h6>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="nome_empresa" class="form-label">Nome da Empresa</label>
+                            <input type="text" class="form-control" id="nome_empresa" value="Minha Empresa" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email_notificacoes" class="form-label">Email para Notificações</label>
+                            <input type="email" class="form-control" id="email_notificacoes" value="notificacoes@minhaempresa.com">
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="notificacao_estoque" checked>
+                            <label class="form-check-label" for="notificacao_estoque">
+                                Notificar quando o estoque estiver baixo
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Salvar Configurações</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold">Preferências do Sistema</h6>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="limite_alerta" class="form-label">Limite padrão para alertas (%)</label>
+                            <input type="number" class="form-control" id="limite_alerta" value="20" min="1" max="100">
+                            <div class="form-text">Porcentagem do estoque mínimo para disparar alertas</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="formato_data" class="form-label">Formato de Data</label>
+                            <select class="form-select" id="formato_data">
+                                <option value="DD/MM/YYYY" selected>DD/MM/YYYY</option>
+                                <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                                <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="itens_pagina" class="form-label">Itens por Página</label>
+                            <select class="form-select" id="itens_pagina">
+                                <option value="10">10</option>
+                                <option value="25" selected>25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Salvar Preferências</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

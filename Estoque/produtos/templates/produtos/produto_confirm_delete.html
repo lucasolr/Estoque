@@ -1,0 +1,44 @@
+{% extends 'produtos/base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h1 class="display-5 mb-4">
+            <i class="bi bi-trash"></i> Excluir Produto
+        </h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <i class="bi bi-exclamation-triangle"></i> Confirmação de Exclusão
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Tem certeza que deseja excluir este produto?</h5>
+                <p class="card-text">Esta ação não poderá ser desfeita.</p>
+                
+                <div class="alert alert-secondary">
+                    <h6>Detalhes do Produto:</h6>
+                    <p><strong>Nome:</strong> {{ produto.nome }}</p>
+                    <p><strong>Quantidade em estoque:</strong> {{ produto.quantidade }}</p>
+                    <p><strong>Preço unitário:</strong> R$ {{ produto.preco|floatformat:2 }}</p>
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'dashboard' %}" class="btn btn-secondary me-md-2">
+                            <i class="bi bi-arrow-left"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Confirmar Exclusão
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

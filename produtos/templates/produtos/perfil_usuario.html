@@ -1,0 +1,101 @@
+{% extends 'produtos/base.html' %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <h1 class="h3 mb-4">{{ titulo }}</h1>
+    
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold">Informações do Usuário</h6>
+                </div>
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-person-circle" style="font-size: 5rem; color: var(--primary-color);"></i>
+                    </div>
+                    <h5 class="mb-1">{{ request.user.get_full_name|default:request.user.username }}</h5>
+                    <p class="text-muted">{{ request.user.email|default:"Email não cadastrado" }}</p>
+                    <hr>
+                    <div class="text-start">
+                        <p><strong>Usuário desde:</strong> {{ request.user.date_joined|date:"d/m/Y" }}</p>
+                        <p><strong>Último acesso:</strong> {{ request.user.last_login|date:"d/m/Y H:i" }}</p>
+                        <p><strong>Status:</strong> <span class="badge bg-success">Ativo</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold">Editar Perfil</h6>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="first_name" class="form-label">Nome</label>
+                                <input type="text" class="form-control" id="first_name" value="{{ request.user.first_name }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="last_name" class="form-label">Sobrenome</label>
+                                <input type="text" class="form-control" id="last_name" value="{{ request.user.last_name }}">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" value="{{ request.user.email }}">
+                        </div>
+                        <hr>
+                        <h6 class="mb-3">Alterar Senha</h6>
+                        <div class="mb-3">
+                            <label for="current_password" class="form-label">Senha Atual</label>
+                            <input type="password" class="form-control" id="current_password">
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="new_password" class="form-label">Nova Senha</label>
+                                <input type="password" class="form-control" id="new_password">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="confirm_password" class="form-label">Confirmar Nova Senha</label>
+                                <input type="password" class="form-control" id="confirm_password">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Atualizar Perfil</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold">Atividade Recente</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Atividade</th>
+                                    <th>Detalhes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ request.user.last_login|date:"d/m/Y H:i" }}</td>
+                                    <td>Login</td>
+                                    <td>Login no sistema</td>
+                                </tr>
+                                <!-- Mais entradas de atividade poderiam ser adicionadas dinamicamente aqui -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

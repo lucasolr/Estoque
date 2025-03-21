@@ -1,0 +1,269 @@
+{% extends 'produtos/base.html' %}
+
+{% block content %}
+<!-- Cabeçalho com estatísticas -->
+<div class="row mb-4 align-items-center">
+    <div class="col-lg-6">
+        <h1 class="h2 mb-0">
+            <i class="bi bi-speedometer2 text-primary me-2"></i> Dashboard
+        </h1>
+        <p class="text-muted mt-2">Visão geral do sistema de gestão de estoque</p>
+    </div>
+    <div class="col-lg-6 text-lg-end mt-3 mt-lg-0">
+        <a href="{% url 'produto_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i> Novo Produto
+        </a>
+    </div>
+</div>
+
+<!-- Cards de estatísticas -->
+<div class="row mb-4">
+    <!-- Card de Total de Itens -->
+    <div class="col-lg-4 col-md-6 mb-3 mb-lg-0">
+        <div class="card border-0 h-100">
+            <div class="card-body d-flex align-items-center">
+                <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3">
+                    <i class="bi bi-box-seam text-primary" style="font-size: 2rem;"></i>
+                </div>
+                <div>
+                    <h6 class="text-muted mb-1">Total em Estoque</h6>
+                    <h2 class="mb-0">{{ total_itens }}</h2>
+                    <span class="small text-muted">itens</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card de Valor Total -->
+    <div class="col-lg-4 col-md-6 mb-3 mb-lg-0">
+        <div class="card border-0 h-100">
+            <div class="card-body d-flex align-items-center">
+                <div class="rounded-circle bg-success bg-opacity-10 p-3 me-3">
+                    <i class="bi bi-coin text-success" style="font-size: 2rem;"></i>
+                </div>
+                <div>
+                    <h6 class="text-muted mb-1">Valor do Estoque</h6>
+                    <h2 class="mb-0">R$ {{ valor_total|floatformat:2 }}</h2>
+                    <span class="small text-muted">em produtos</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Card de Alertas -->
+    <div class="col-lg-4 col-md-12 mb-3 mb-lg-0">
+        <div class="card border-0 h-100 {% if alertas > 0 %}border-start border-danger border-5{% endif %}">
+            <div class="card-body d-flex align-items-center">
+                <div class="rounded-circle {% if alertas > 0 %}bg-danger bg-opacity-10{% else %}bg-secondary bg-opacity-10{% endif %} p-3 me-3">
+                    <i class="bi bi-exclamation-triangle {% if alertas > 0 %}text-danger{% else %}text-secondary{% endif %}" style="font-size: 2rem;"></i>
+                </div>
+                <div>
+                    <h6 class="text-muted mb-1">Alertas de Estoque</h6>
+                    <h2 class="mb-0">{{ alertas }}</h2>
+                    <a href="{% url 'alertas_estoque' %}" class="small {% if alertas > 0 %}text-danger{% else %}text-muted{% endif %}">
+                        {% if alertas > 0 %}Ver detalhes <i class="bi bi-arrow-right"></i>{% else %}Nenhum alerta{% endif %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Atalhos rápidos de funcionalidades -->
+<div class="row mb-4">
+    <div class="col-12">
+        <h5 class="mb-3 text-muted fw-semibold"><i class="bi bi-lightning-charge"></i> Acesso Rápido</h5>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card border-0 h-100 shadow-sm">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3">
+                        <i class="bi bi-clock-history text-primary"></i>
+                    </div>
+                    <h5 class="card-title mb-0">Histórico</h5>
+                </div>
+                <p class="card-text text-muted small mb-3">Acompanhe todas as movimentações de estoque registradas no sistema.</p>
+                <a href="{% url 'historico_transacoes' %}" class="btn btn-sm btn-outline-primary w-100">
+                    Visualizar <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card border-0 h-100 shadow-sm">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="rounded-circle bg-success bg-opacity-10 p-3 me-3">
+                        <i class="bi bi-graph-up text-success"></i>
+                    </div>
+                    <h5 class="card-title mb-0">Previsão</h5>
+                </div>
+                <p class="card-text text-muted small mb-3">Veja estimativas de quanto tempo seu estoque atual vai durar.</p>
+                <a href="{% url 'previsao_estoque' %}" class="btn btn-sm btn-outline-success w-100">
+                    Visualizar <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card border-0 h-100 shadow-sm">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="rounded-circle bg-danger bg-opacity-10 p-3 me-3">
+                        <i class="bi bi-exclamation-triangle text-danger"></i>
+                    </div>
+                    <h5 class="card-title mb-0">Alertas</h5>
+                </div>
+                <p class="card-text text-muted small mb-3">Produtos que estão com estoque abaixo do nível mínimo recomendado.</p>
+                <a href="{% url 'alertas_estoque' %}" class="btn btn-sm btn-outline-danger w-100">
+                    Visualizar <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card border-0 h-100 shadow-sm">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="rounded-circle bg-info bg-opacity-10 p-3 me-3">
+                        <i class="bi bi-file-earmark-bar-graph text-info"></i>
+                    </div>
+                    <h5 class="card-title mb-0">Relatórios</h5>
+                </div>
+                <p class="card-text text-muted small mb-3">Gere relatórios detalhados sobre a situação atual do estoque.</p>
+                <a href="{% url 'relatorios' %}" class="btn btn-sm btn-outline-info w-100">
+                    Visualizar <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filtro de produtos -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <form method="get" class="row g-3 align-items-center">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" name="query" class="form-control border-start-0" placeholder="Buscar produtos por nome ou quantidade..." value="{{ query }}">
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-search me-1"></i> Buscar
+                        </button>
+                        {% if query %}
+                            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary ms-2">
+                                <i class="bi bi-x me-1"></i> Limpar
+                            </a>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabela de Produtos -->
+<div class="row">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+                <h5 class="mb-0">
+                    <i class="bi bi-boxes me-2 text-primary"></i> Lista de Produtos
+                </h5>
+                {% if produtos %}
+                <span class="badge bg-light text-dark">
+                    Total: {{ produtos|length }} produto(s)
+                </span>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                {% if produtos %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th style="width: 80px">Imagem</th>
+                                    <th>Produto</th>
+                                    <th class="text-center">Quantidade</th>
+                                    <th class="text-end">Preço</th>
+                                    <th class="text-end">Total</th>
+                                    <th class="text-center" style="width: 180px">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for produto in produtos %}
+                                    <tr>
+                                        <td>
+                                            {% with produto.imagens.filter.first as imagem %}
+                                                {% if imagem %}
+                                                    <img src="{{ imagem.imagem.url }}" alt="{{ produto.nome }}" class="img-thumbnail" style="width: 60px; height: 60px; object-fit: cover;">
+                                                {% else %}
+                                                    <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                                        <i class="bi bi-image text-muted"></i>
+                                                    </div>
+                                                {% endif %}
+                                            {% endwith %}
+                                        </td>
+                                        <td>
+                                            <h6 class="mb-1">{{ produto.nome }}</h6>
+                                            <small class="text-muted">{{ produto.descricao|truncatechars:50 }}</small>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge {% if produto.esta_abaixo_do_minimo %}bg-danger{% else %}bg-light text-dark{% endif %} fw-normal px-3 py-2">
+                                                {{ produto.quantidade }}
+                                                {% if produto.esta_abaixo_do_minimo %}
+                                                    <i class="bi bi-exclamation-triangle-fill ms-1"></i>
+                                                {% endif %}
+                                            </span>
+                                        </td>
+                                        <td class="text-end">R$ {{ produto.preco|floatformat:2 }}</td>
+                                        <td class="text-end">R$ {{ produto.valor_total|floatformat:2 }}</td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a href="{% url 'produto_update' produto.id %}" class="btn btn-sm btn-outline-primary" title="Editar">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <a href="{% url 'atualizar_estoque' produto.id %}" class="btn btn-sm btn-outline-success" title="Atualizar estoque">
+                                                    <i class="bi bi-arrows-expand"></i>
+                                                </a>
+                                                <a href="{% url 'gerenciar_imagens' produto.id %}" class="btn btn-sm btn-outline-info" title="Gerenciar imagens">
+                                                    <i class="bi bi-images"></i>
+                                                </a>
+                                                <a href="{% url 'produto_delete' produto.id %}" class="btn btn-sm btn-outline-danger" title="Excluir">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <img src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/icons/inbox.svg" alt="Nenhum produto" style="width: 64px; height: 64px; opacity: 0.2;">
+                        <h5 class="mt-3">Nenhum produto encontrado</h5>
+                        {% if query %}
+                            <p class="text-muted">Sua busca por "{{ query }}" não retornou resultados.</p>
+                            <a href="{% url 'dashboard' %}" class="btn btn-outline-primary mt-2">Limpar filtro</a>
+                        {% else %}
+                            <p class="text-muted">Cadastre produtos para visualizá-los aqui.</p>
+                            <a href="{% url 'produto_create' %}" class="btn btn-primary mt-2">
+                                <i class="bi bi-plus-circle me-1"></i> Cadastrar produto
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

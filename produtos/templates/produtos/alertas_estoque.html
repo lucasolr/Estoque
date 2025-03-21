@@ -1,0 +1,84 @@
+{% extends 'produtos/base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <h1 class="display-5 mb-4">
+            <i class="bi bi-exclamation-triangle"></i> Alertas de Estoque
+        </h1>
+    </div>
+    <div class="col-md-6 text-md-end">
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Voltar
+        </a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card bg-danger text-white">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-2 text-center">
+                        <i class="bi bi-exclamation-triangle-fill display-1"></i>
+                    </div>
+                    <div class="col-md-10">
+                        <h4 class="card-title">Produtos com Estoque Baixo</h4>
+                        <p class="card-text">
+                            Existem <strong>{{ count }}</strong> produtos com estoque abaixo do nível mínimo configurado.
+                            Considere repor o estoque desses itens para evitar falta de produtos.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <i class="bi bi-list-ul"></i> Lista de Alertas
+    </div>
+    <div class="card-body">
+        {% if alertas %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Produto</th>
+                            <th class="text-center">Estoque Atual</th>
+                            <th class="text-center">Estoque Mínimo</th>
+                            <th class="text-center">Data do Alerta</th>
+                            <th class="text-center">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for alerta in alertas %}
+                            <tr class="bg-danger bg-opacity-10">
+                                <td>{{ alerta.produto.nome }}</td>
+                                <td class="text-center text-danger fw-bold">{{ alerta.quantidade_atual }}</td>
+                                <td class="text-center">{{ alerta.produto.estoque_minimo }}</td>
+                                <td class="text-center">{{ alerta.data_alerta|date:"d/m/Y H:i" }}</td>
+                                <td class="text-center">
+                                    <div class="btn-group">
+                                        <a href="{% url 'atualizar_estoque' alerta.produto.id %}" class="btn btn-sm btn-outline-success">
+                                            <i class="bi bi-plus-circle"></i> Repor Estoque
+                                        </a>
+                                        <a href="{% url 'produto_update' alerta.produto.id %}" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil"></i> Editar Produto
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-success">
+                <i class="bi bi-check-circle-fill"></i> Nenhum alerta de estoque baixo no momento. Todos os produtos estão com níveis de estoque adequados.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 
