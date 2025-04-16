@@ -4,23 +4,29 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('', views.dashboard, name='dashboard'),
-    path('produtos/', views.listar_produtos, name='listar_produtos'),
-    path('produto/new/', views.produto_create, name='produto_create'),
-    path('produto/<int:pk>/edit/', views.produto_update, name='produto_update'),
-    path('produto/<int:pk>/delete/', views.produto_delete, name='produto_delete'),
+    
+    # URLs Produtos Novos
+    path('produtos/novos/', views.listar_produtos_novos, name='listar_produtos_novos'),
+    path('produtos/novos/novo/', views.produto_novo_create, name='produto_novo_create'),
+    path('produtos/novos/<int:pk>/editar/', views.produto_novo_update, name='produto_novo_update'),
+    path('produtos/novos/<int:pk>/excluir/', views.produto_novo_delete, name='produto_novo_delete'),
+    
+    # URLs Produtos Usados
+    path('produtos/usados/', views.listar_produtos_usados, name='listar_produtos_usados'),
+    path('produtos/usados/novo/', views.produto_usado_create, name='produto_usado_create'),
+    path('produtos/usados/<int:pk>/editar/', views.produto_usado_update, name='produto_usado_update'),
+    path('produtos/usados/<int:pk>/excluir/', views.produto_usado_delete, name='produto_usado_delete'),
+    
+    # URLs Comuns a ambos os tipos
     path('produto/<int:pk>/estoque/', views.atualizar_estoque, name='atualizar_estoque'),
-    
-    # Novas URLs
-    path('alertas/', views.alertas_estoque, name='alertas_estoque'),
-    path('historico/', views.historico_transacoes, name='historico_transacoes'),
-    path('previsao/', views.previsao_estoque, name='previsao_estoque'),
-    
-    # Gerenciamento de imagens
     path('produto/<int:pk>/imagens/', views.gerenciar_imagens, name='gerenciar_imagens'),
     path('imagem/<int:pk>/delete/', views.deletar_imagem, name='deletar_imagem'),
     path('imagem/<int:pk>/principal/', views.definir_imagem_principal, name='definir_imagem_principal'),
     
-    # URLs para configurações e perfil
+    # Outras funcionalidades
+    path('alertas/', views.alertas_estoque, name='alertas_estoque'),
+    path('historico/', views.historico_transacoes, name='historico_transacoes'),
+    path('previsao/', views.previsao_estoque, name='previsao_estoque'),
     path('configuracoes/', views.configuracoes, name='configuracoes'),
     path('perfil/', views.perfil_usuario, name='perfil_usuario'),
     path('relatorios/', views.relatorios, name='relatorios'),

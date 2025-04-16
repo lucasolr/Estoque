@@ -17,7 +17,7 @@
                 <i class="bi bi-grid-3x3-gap"></i>
             </button>
         </div>
-        <a href="{% url 'produto_create' %}" class="btn btn-primary">
+        <a href="{% url 'produto_novo_create' %}" class="btn btn-primary">
             <i class="bi bi-plus-circle me-1"></i> Novo Produto
         </a>
     </div>
@@ -54,7 +54,7 @@
                 <div class="col-md-3">
                     <div class="d-grid">
                         {% if query %}
-                            <a href="{% url 'listar_produtos' %}" class="btn btn-outline-secondary">
+                            <a href="{% url 'listar_produtos_novos' %}" class="btn btn-outline-secondary">
                                 <i class="bi bi-x-circle me-1"></i> Limpar Filtros
                             </a>
                         {% else %}
@@ -89,8 +89,6 @@
                                 <th>Nome</th>
                                 <th>Descrição</th>
                                 <th class="text-center">Quantidade</th>
-                                <th class="text-end">Preço (R$)</th>
-                                <th class="text-end">Valor Total (R$)</th>
                                 <th class="text-center">Ações</th>
                             </tr>
                         </thead>
@@ -116,11 +114,9 @@
                                             <i class="bi bi-exclamation-triangle-fill text-danger" title="Estoque abaixo do mínimo"></i>
                                         {% endif %}
                                     </td>
-                                    <td class="text-end">{{ produto.preco|floatformat:2 }}</td>
-                                    <td class="text-end fw-bold">{{ produto.valor_total|floatformat:2 }}</td>
                                     <td class="text-center">
                                         <div class="btn-group">
-                                            <a href="{% url 'produto_update' produto.id %}" class="btn btn-sm btn-outline-primary" title="Editar">
+                                            <a href="{% url 'produto_novo_update' produto.id %}" class="btn btn-sm btn-outline-primary" title="Editar">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
                                             <a href="{% url 'atualizar_estoque' produto.id %}" class="btn btn-sm btn-outline-success" title="Atualizar estoque">
@@ -129,7 +125,7 @@
                                             <a href="{% url 'gerenciar_imagens' produto.id %}" class="btn btn-sm btn-outline-info" title="Gerenciar imagens">
                                                 <i class="bi bi-images"></i>
                                             </a>
-                                            <a href="{% url 'produto_delete' produto.id %}" class="btn btn-sm btn-outline-danger" title="Excluir">
+                                            <a href="{% url 'produto_novo_delete' produto.id %}" class="btn btn-sm btn-outline-danger" title="Excluir">
                                                 <i class="bi bi-trash"></i>
                                             </a>
                                         </div>
@@ -183,20 +179,17 @@
                                 <span class="badge bg-light text-dark">
                                     <i class="bi bi-box me-1"></i> {{ produto.quantidade }} un.
                                 </span>
-                                <span class="fw-bold text-success">
-                                    R$ {{ produto.preco|floatformat:2 }}
-                                </span>
                             </div>
                         </div>
                         <div class="card-footer bg-white border-top-0 d-flex justify-content-between">
                             <div class="btn-group w-100">
-                                <a href="{% url 'produto_update' produto.id %}" class="btn btn-sm btn-outline-primary flex-grow-1" title="Editar">
+                                <a href="{% url 'produto_novo_update' produto.id %}" class="btn btn-sm btn-outline-primary flex-grow-1" title="Editar">
                                     <i class="bi bi-pencil me-1"></i> Editar
                                 </a>
                                 <a href="{% url 'atualizar_estoque' produto.id %}" class="btn btn-sm btn-outline-success flex-grow-1" title="Atualizar estoque">
                                     <i class="bi bi-arrows-expand me-1"></i> Estoque
                                 </a>
-                                <a href="{% url 'produto_delete' produto.id %}" class="btn btn-sm btn-outline-danger" title="Excluir">
+                                <a href="{% url 'produto_novo_delete' produto.id %}" class="btn btn-sm btn-outline-danger" title="Excluir">
                                     <i class="bi bi-trash"></i>
                                 </a>
                             </div>
@@ -214,12 +207,12 @@
             <p class="text-muted">
                 {% if query %}
                     Não encontramos produtos para a busca "{{ query }}".
-                    <a href="{% url 'listar_produtos' %}" class="text-decoration-none">Limpar busca</a>
+                    <a href="{% url 'listar_produtos_novos' %}" class="text-decoration-none">Limpar busca</a>
                 {% else %}
                     Você ainda não cadastrou nenhum produto.
                 {% endif %}
             </p>
-            <a href="{% url 'produto_create' %}" class="btn btn-primary mt-2">
+            <a href="{% url 'produto_novo_create' %}" class="btn btn-primary mt-2">
                 <i class="bi bi-plus-circle me-1"></i> Adicionar Produto
             </a>
         </div>

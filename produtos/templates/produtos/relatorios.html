@@ -7,16 +7,15 @@
     <!-- Resumo do Estoque -->
     <div class="row mb-4">
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card shadow h-100 py-2 border-left-primary">
+            <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Total de Produtos</div>
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total de Produtos</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_produtos }}</div>
                         </div>
                         <div class="col-auto">
-                            <i class="bi bi-box-seam fa-2x text-gray-300" style="font-size: 2rem; color: var(--primary-color);"></i>
+                            <i class="bi bi-box-seam fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -24,33 +23,15 @@
         </div>
 
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card shadow h-100 py-2 border-left-success">
+            <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Valor Total do Estoque</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">R$ {{ valor_total|floatformat:2 }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-currency-dollar fa-2x text-gray-300" style="font-size: 2rem; color: #28a745;"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card shadow h-100 py-2 border-left-info">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Total de Itens</div>
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total de Itens em Estoque</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_itens }}</div>
                         </div>
                         <div class="col-auto">
-                            <i class="bi bi-list-check fa-2x text-gray-300" style="font-size: 2rem; color: #17a2b8;"></i>
+                            <i class="bi bi-boxes fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -58,16 +39,15 @@
         </div>
 
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card shadow h-100 py-2 border-left-warning">
+            <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Alertas de Estoque</div>
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Produtos com Estoque Baixo</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ produtos_estoque_baixo }}</div>
                         </div>
                         <div class="col-auto">
-                            <i class="bi bi-exclamation-triangle fa-2x text-gray-300" style="font-size: 2rem; color: #ffc107;"></i>
+                            <i class="bi bi-exclamation-triangle fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>

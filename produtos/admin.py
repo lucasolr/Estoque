@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Produto, ProdutoImagem, Transacao, AlertaEstoqueBaixo, PrevisaoEstoque
+from .models import Produto, ProdutoImagem, Transacao, AlertaEstoqueBaixo, PrevisaoEstoque, Categoria
 
 class ProdutoImagemInline(admin.TabularInline):
     model = ProdutoImagem
@@ -7,9 +7,9 @@ class ProdutoImagemInline(admin.TabularInline):
 
 @admin.register(Produto)
 class ProdutoAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'quantidade', 'preco', 'valor_total', 'estoque_minimo', 'esta_abaixo_do_minimo', 'data_cadastro', 'data_atualizacao')
+    list_display = ('nome', 'tipo', 'quantidade', 'estoque_minimo', 'esta_abaixo_do_minimo', 'data_cadastro', 'data_atualizacao')
     search_fields = ('nome', 'descricao')
-    list_filter = ('data_cadastro', 'data_atualizacao')
+    list_filter = ('tipo', 'data_cadastro', 'data_atualizacao')
     readonly_fields = ('data_cadastro', 'data_atualizacao')
     inlines = [ProdutoImagemInline]
 
@@ -39,3 +39,8 @@ class PrevisaoEstoqueAdmin(admin.ModelAdmin):
     list_filter = ('data_calculo',)
     search_fields = ('produto__nome',)
     readonly_fields = ('data_calculo',)
+
+@admin.register(Categoria)
+class CategoriaAdmin(admin.ModelAdmin):
+    list_display = ('nome', 'descricao')
+    search_fields = ('nome',)

@@ -806,26 +806,29 @@
             </div>
             <div class="list-group list-group-flush">
                 <!-- Dashboard isolado -->
-                <a href="{% url 'dashboard' %}" class="list-group-item {% if request.path == '/' %}active{% endif %}">
+                <a href="{% url 'dashboard' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
                     <i class="bi bi-speedometer2"></i> Dashboard
                 </a>
                 
-                <!-- Seção de Gerenciamento -->
+                <!-- Seção de Gerenciamento (Estoque) -->
                 <div class="list-group-item product-dropdown">
                     <div class="d-flex justify-content-between align-items-center dropdown-toggle" 
                          data-bs-toggle="collapse" 
                          data-bs-target="#gerenciamentoSubmenu" 
-                         aria-expanded="{% if 'produto' in request.path or 'produtos/' in request.path %}true{% else %}false{% endif %}">
+                         aria-expanded="{% if request.resolver_match.url_name in 'listar_produtos_novos,produto_novo_create,produto_novo_update,produto_novo_delete,listar_produtos_usados,produto_usado_create,produto_usado_update,produto_usado_delete,categoria_list,categoria_create,categoria_update,categoria_delete' %}true{% else %}false{% endif %}">
                         <span><i class="bi bi-boxes"></i> Estoque</span>
                         <i class="bi bi-caret-down-fill small"></i>
                     </div>
-                    <div class="collapse {% if 'produto' in request.path or 'produtos/' in request.path %}show{% endif %}" id="gerenciamentoSubmenu">
-                        <div class="list-group mt-2" style="border-left: 3px solid rgba(255,255,255,0.2); padding-left: 10px;">
-                            <a href="{% url 'listar_produtos' %}" class="list-group-item {% if 'produtos/' in request.path %}active{% endif %} border-0">
-                                <i class="bi bi-list-ul"></i> Listar Produtos
+                    <div class="collapse {% if request.resolver_match.url_name in 'listar_produtos_novos,produto_novo_create,produto_novo_update,produto_novo_delete,listar_produtos_usados,produto_usado_create,produto_usado_update,produto_usado_delete,categoria_list,categoria_create,categoria_update,categoria_delete' %}show{% endif %}" id="gerenciamentoSubmenu">
+                        <div class="list-group list-group-flush">
+                            <a href="{% url 'listar_produtos_novos' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name in 'listar_produtos_novos,produto_novo_create,produto_novo_update,produto_novo_delete' %}active{% endif %}">
+                                <i class="bi bi-box-seam"></i> Produtos Novos
                             </a>
-                            <a href="{% url 'produto_create' %}" class="list-group-item {% if 'produto/new' in request.path %}active{% endif %} border-0">
-                                <i class="bi bi-plus-circle"></i> Novo Produto
+                            <a href="{% url 'listar_produtos_usados' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name in 'listar_produtos_usados,produto_usado_create,produto_usado_update,produto_usado_delete' %}active{% endif %}">
+                                <i class="bi bi-recycle"></i> Produtos Usados
+                            </a>
+                            <a href="{% url 'categoria_list' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name in 'categoria_list,categoria_create,categoria_update,categoria_delete' %}active{% endif %}">
+                                <i class="bi bi-tags"></i> Categorias
                             </a>
                         </div>
                     </div>
@@ -836,57 +839,60 @@
                     <div class="d-flex justify-content-between align-items-center dropdown-toggle" 
                          data-bs-toggle="collapse" 
                          data-bs-target="#analisesSubmenu" 
-                         aria-expanded="{% if 'historico' in request.path or 'alertas' in request.path or 'previsao' in request.path or 'relatorios' in request.path %}true{% else %}false{% endif %}">
+                         aria-expanded="{% if request.resolver_match.url_name in 'previsao_estoque,alertas_estoque,historico_transacoes,relatorios' %}true{% else %}false{% endif %}">
                         <span><i class="bi bi-graph-up"></i> Análises</span>
                         <i class="bi bi-caret-down-fill small"></i>
                     </div>
-                    <div class="collapse {% if 'historico' in request.path or 'alertas' in request.path or 'previsao' in request.path or 'relatorios' in request.path %}show{% endif %}" id="analisesSubmenu">
-                        <div class="list-group mt-2" style="border-left: 3px solid rgba(255,255,255,0.2); padding-left: 10px;">
-                            <a href="{% url 'previsao_estoque' %}" class="list-group-item {% if 'previsao' in request.path %}active{% endif %} border-0">
+                    <div class="collapse {% if request.resolver_match.url_name in 'previsao_estoque,alertas_estoque,historico_transacoes,relatorios' %}show{% endif %}" id="analisesSubmenu">
+                        <div class="list-group list-group-flush">
+                            <a href="{% url 'previsao_estoque' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'previsao_estoque' %}active{% endif %}">
                                 <i class="bi bi-calendar-week"></i> Previsão
                             </a>
-                            <a href="{% url 'alertas_estoque' %}" class="list-group-item {% if 'alertas' in request.path %}active{% endif %} border-0">
-                                <i class="bi bi-exclamation-triangle position-relative">
-                                    {% if alertas > 0 %}
-                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                        {{ alertas }}
-                                    </span>
-                                    {% endif %}
-                                </i> Alertas
+                            <a href="{% url 'alertas_estoque' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'alertas_estoque' %}active{% endif %}">
+                                <i class="bi bi-exclamation-triangle"></i> Alertas
+                                {% if alertas > 0 %}
+                                <span class="badge bg-danger rounded-pill position-absolute top-50 end-0 translate-middle-y me-3">{{ alertas }}</span>
+                                {% endif %}
                             </a>
-                            <a href="{% url 'historico_transacoes' %}" class="list-group-item {% if 'historico' in request.path %}active{% endif %} border-0">
+                            <a href="{% url 'historico_transacoes' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'historico_transacoes' %}active{% endif %}">
                                 <i class="bi bi-clock-history"></i> Histórico
                             </a>
-                            <a href="{% url 'relatorios' %}" class="list-group-item {% if 'relatorios' in request.path %}active{% endif %} border-0">
+                            <a href="{% url 'relatorios' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'relatorios' %}active{% endif %}">
                                 <i class="bi bi-file-earmark-bar-graph"></i> Relatórios
                             </a>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Seção de Configurações -->
+                <!-- Seção de Sistema -->
                 <div class="list-group-item product-dropdown">
                     <div class="d-flex justify-content-between align-items-center dropdown-toggle" 
                          data-bs-toggle="collapse" 
                          data-bs-target="#configSubmenu" 
-                         aria-expanded="{% if '/admin' in request.path or 'configuracoes' in request.path or 'backup' in request.path %}true{% else %}false{% endif %}">
+                         aria-expanded="{% if '/admin/' in request.path or request.resolver_match.url_name in 'configuracoes,backup_sistema' %}true{% else %}false{% endif %}">
                         <span><i class="bi bi-gear-fill"></i> Sistema</span>
                         <i class="bi bi-caret-down-fill small"></i>
                     </div>
-                    <div class="collapse {% if '/admin' in request.path or 'configuracoes' in request.path or 'backup' in request.path %}show{% endif %}" id="configSubmenu">
-                        <div class="list-group mt-2" style="border-left: 3px solid rgba(255,255,255,0.2); padding-left: 10px;">
-                            <a href="/admin" class="list-group-item {% if '/admin' in request.path %}active{% endif %} border-0">
+                    <div class="collapse {% if '/admin/' in request.path or request.resolver_match.url_name in 'configuracoes,backup_sistema' %}show{% endif %}" id="configSubmenu">
+                        <div class="list-group list-group-flush">
+                            <a href="/admin" class="list-group-item list-group-item-action {% if '/admin/' in request.path %}active{% endif %}">
                                 <i class="bi bi-shield-lock"></i> Admin
                             </a>
-                            <a href="{% url 'configuracoes' %}" class="list-group-item {% if 'configuracoes' in request.path %}active{% endif %} border-0">
+                            <a href="{% url 'configuracoes' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'configuracoes' %}active{% endif %}">
                                 <i class="bi bi-sliders"></i> Configurar
                             </a>
-                            <a href="{% url 'backup_sistema' %}" class="list-group-item {% if 'backup' in request.path %}active{% endif %} border-0">
+                            <a href="{% url 'backup_sistema' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'backup_sistema' %}active{% endif %}">
                                 <i class="bi bi-cloud-arrow-up"></i> Backup
                             </a>
                         </div>
                     </div>
                 </div>
+            </div>
+            <!-- Botão de Sair Fixo na Base -->
+            <div class="mt-auto p-3 border-top border-white border-opacity-10">
+                 <a href="{% url 'logout' %}" class="btn btn-outline-light btn-sm w-100">
+                     <i class="bi bi-box-arrow-left me-2"></i> Sair
+                 </a>
             </div>
         </div>
         <!-- Page Content -->

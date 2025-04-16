@@ -4,14 +4,26 @@ from .models import Produto, Transacao, ProdutoImagem
 class ProdutoForm(forms.ModelForm):
     class Meta:
         model = Produto
-        fields = ['nome', 'descricao', 'quantidade', 'preco', 'estoque_minimo']
+        fields = ['nome', 'descricao', 'quantidade', 'tipo', 'estoque_minimo']
         widgets = {
             'nome': forms.TextInput(attrs={'class': 'form-control'}),
             'descricao': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'quantidade': forms.NumberInput(attrs={'class': 'form-control'}),
-            'preco': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
             'estoque_minimo': forms.NumberInput(attrs={'class': 'form-control'}),
+            'tipo': forms.Select(attrs={'class': 'form-select'}),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        tipo = cleaned_data.get("tipo")
+        estoque_minimo = cleaned_data.get("estoque_minimo")
+
+        if tipo == 'usado':
+            cleaned_data['estoque_minimo'] = None
+        elif estoque_minimo is None:
+            pass
+        
+        return cleaned_data
 
 class TransacaoForm(forms.ModelForm):
     class Meta:

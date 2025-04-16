@@ -6,26 +6,31 @@ import os
 from django.utils import timezone
 from datetime import timedelta
 import uuid
+from django.db.models import Sum
 
 # Create your models here.
 
 class Produto(models.Model):
+    TIPO_CHOICES = (
+        ('novo', 'Novo'),
+        ('usado', 'Usado'),
+    )
+    
     nome = models.CharField(max_length=100)
     descricao = models.TextField()
     quantidade = models.IntegerField(default=0)
-    preco = models.DecimalField(max_digits=10, decimal_places=2)
     data_cadastro = models.DateTimeField(auto_now_add=True)
     data_atualizacao = models.DateTimeField(auto_now=True)
-    estoque_minimo = models.IntegerField(default=5, help_text="Quantidade mínima antes de gerar alerta")
+    estoque_minimo = models.IntegerField(null=True, blank=True, help_text="Quantidade mínima para produtos novos antes de gerar alerta")
+    tipo = models.CharField(max_length=10, choices=TIPO_CHOICES, default='novo')
     
     def __str__(self):
         return self.nome
     
-    def valor_total(self):
-        return self.quantidade * self.preco
-    
     def esta_abaixo_do_minimo(self):
-        return self.quantidade <= self.estoque_minimo
+        if self.tipo == 'novo' and self.estoque_minimo is not None:
+            return self.quantidade <= self.estoque_minimo
+        return False
     
     def dias_ate_acabar(self):
         # Verificar transações dos últimos 30 dias
@@ -34,20 +39,21 @@ class Produto(models.Model):
             produto=self, 
             data__gte=ultimos_30_dias,
             tipo='saida'
-        )
+        ).aggregate(total_saidas=Sum('quantidade'))
         
-        if transacoes.count() == 0:
-            return None  # Sem dados suficientes
+        total_saidas = transacoes['total_saidas'] or 0
         
-        # Calcular média diária de saídas
-        total_saidas = sum([t.quantidade for t in transacoes])
+        if total_saidas == 0:
+            return None  # Sem dados suficientes ou sem consumo
+            
+        # Calcular média diária de saídas (considerando apenas dias com saída? Não, média em 30 dias)
         media_diaria = total_saidas / 30
         
         if media_diaria <= 0:
-            return None  # Sem consumo recente
-        
+            return None  # Evita divisão por zero
+            
         # Dias até acabar o estoque
-        return round(self.quantidade / media_diaria) if media_diaria > 0 else None
+        return round(self.quantidade / media_diaria)
 
 def produto_imagem_upload_path(instance, filename):
     # Gera um nome único para o arquivo
@@ -135,26 +141,37 @@ class Categoria(models.Model):
 
 @receiver(post_save, sender=Produto)
 def verificar_estoque_minimo(sender, instance, **kwargs):
-    """Verifica se o produto está abaixo do mínimo e cria um alerta se necessário"""
-    if instance.quantidade <= instance.estoque_minimo:
-        # Verificar se já existe um alerta não resolvido
-        alerta_existente = AlertaEstoqueBaixo.objects.filter(
-            produto=instance,
-            resolvido=False
-        ).first()
-        
-        if not alerta_existente:
-            AlertaEstoqueBaixo.objects.create(
+    """Verifica se o produto está abaixo do mínimo e cria um alerta se necessário (apenas para produtos novos)"""
+    if instance.tipo == 'novo' and instance.estoque_minimo is not None: # Apenas para produtos novos
+        if instance.quantidade <= instance.estoque_minimo:
+            # Verificar se já existe um alerta não resolvido
+            alerta_existente = AlertaEstoqueBaixo.objects.filter(
                 produto=instance,
-                quantidade_atual=instance.quantidade
+                resolvido=False
+            ).first()
+            
+            if not alerta_existente:
+                AlertaEstoqueBaixo.objects.create(
+                    produto=instance,
+                    quantidade_atual=instance.quantidade
+                )
+        else:
+            # Resolver alertas existentes se o estoque foi reabastecido
+            alertas_abertos = AlertaEstoqueBaixo.objects.filter(
+                produto=instance,
+                resolvido=False
             )
+            
+            for alerta in alertas_abertos:
+                alerta.resolvido = True
+                alerta.data_resolucao = timezone.now()
+                alerta.save()
     else:
-        # Resolver alertas existentes se o estoque foi reabastecido
+        # Se o produto virou 'usado' ou não tem estoque mínimo, resolve alertas pendentes
         alertas_abertos = AlertaEstoqueBaixo.objects.filter(
             produto=instance,
             resolvido=False
         )
-        
         for alerta in alertas_abertos:
             alerta.resolvido = True
             alerta.data_resolucao = timezone.now()

@@ -61,7 +61,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="{{ form.descricao.id_for_label }}" class="form-label">Descrição</label>
+                        {{ form.descricao.label_tag }}
                         {{ form.descricao }}
                         {% if form.descricao.errors %}
                             <div class="text-danger">
@@ -81,25 +81,27 @@
                             {% endif %}
                         </div>
                         <div class="col-md-6">
-                            <label for="{{ form.preco.id_for_label }}" class="form-label">Preço Unitário (R$)</label>
-                            {{ form.preco }}
-                            {% if form.preco.errors %}
+                            <label for="{{ form.tipo.id_for_label }}" class="form-label">Tipo</label>
+                            {{ form.tipo }}
+                            {% if form.tipo.errors %}
                                 <div class="text-danger">
-                                    {{ form.preco.errors }}
+                                    {{ form.tipo.errors }}
                                 </div>
                             {% endif %}
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="{{ form.estoque_minimo.id_for_label }}" class="form-label">Estoque Mínimo</label>
-                        {{ form.estoque_minimo }}
-                        <small class="form-text text-muted">Quantidade mínima antes de gerar alerta</small>
-                        {% if form.estoque_minimo.errors %}
-                            <div class="text-danger">
-                                {{ form.estoque_minimo.errors }}
-                            </div>
-                        {% endif %}
+                    <div class="row mb-3">
+                        <div class="col-md-6" id="estoque_minimo_field">
+                            <label for="{{ form.estoque_minimo.id_for_label }}" class="form-label">Estoque Mínimo</label>
+                            {{ form.estoque_minimo }}
+                            <small class="form-text text-muted">Quantidade mínima antes de gerar alerta</small>
+                            {% if form.estoque_minimo.errors %}
+                                <div class="text-danger">
+                                    {{ form.estoque_minimo.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
 
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -115,4 +117,27 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const tipoSelect = document.getElementById('{{ form.tipo.id_for_label }}');
+        const estoqueMinimoField = document.getElementById('estoque_minimo_field');
+
+        function toggleEstoqueMinimo() {
+            if (tipoSelect.value === 'usado') {
+                estoqueMinimoField.style.display = 'none';
+            } else {
+                estoqueMinimoField.style.display = 'block';
+            }
+        }
+
+        // Initial check
+        toggleEstoqueMinimo();
+
+        // Add event listener
+        tipoSelect.addEventListener('change', toggleEstoqueMinimo);
+    });
+</script>
 {% endblock %} 
